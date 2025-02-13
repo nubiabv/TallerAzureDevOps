@@ -1,0 +1,33 @@
+
+trigger:
+- main
+
+pool:
+  name: nubia_agent_pool
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: "Compilacion"
+  inputs:
+    azureSubscription: 'Azure for Students(e9d441bf-2a34-4287-baeb-4dfb620bb04d)'
+    command: 'build'
+    projects: '**/*.csproj'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/SandboxProf'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    azureSubscription: 'Azure for Students(e9d441bf-2a34-4287-baeb-4dfb620bb04d)'
+    command: 'publish'
+    publishWebProjects: true
+    workingDirectory: '$(System.DefaultWorkingDirectory)/SandboxProf'
+
+-  task: AzureRmWebAppDeployment@5
+   displayName: "Compilacion"
+   inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure for Students(e9d441bf-2a34-4287-baeb-4dfb620bb04d)'
+    appType: 'webAppLinux'
+    WebAppName: 'TallerAzureAsc2DevNbv'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    DeploymentTypeLinux: 'oneDeploy'
+    
